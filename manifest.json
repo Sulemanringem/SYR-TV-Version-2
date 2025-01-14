@@ -26,15 +26,15 @@
   "edge_side_panel": {
     "preferred_width": 400
   },
-  "file_handlers": {
-    "videos": {
-      "action": "/SYR-TV/index.html",
-      "accept": {
-        "video/mp4": [".mp4"],
-        "video/webm": [".webm"]
-      }
+ "file_handlers": [
+  {
+    "action": "/SYR-TV/index.html",
+    "accept": {
+      "video/mp4": [".mp4"],
+      "video/webm": [".webm"]
     }
-  },
+  }
+],
   "handle_links": ["/SYR-TV/"],
   "protocol_handlers": [
     {
