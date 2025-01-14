@@ -7,7 +7,9 @@ const urlsToCache = [
   "/SYR-TV/images/logo.png",
   "/SYR-TV/favicon-32x32.png",
   "/SYR-TV/favicon-16x16.png",
-  "/SYR-TV/apple-touch-icon.png"
+  "/SYR-TV/apple-touch-icon.png",
+  "/SYR-TV/icon-512x512.png",
+  "/SYR-TV/icon-192x192.png"
 ];
 
 self.addEventListener("install", (event) => {
@@ -22,8 +24,9 @@ self.addEventListener("install", (event) => {
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // If cached response exists, return it, otherwise fetch from network
-      return response || fetch(event.request);
+      return response || fetch(event.request).catch(() => {
+        console.error("Failed to fetch:", event.request.url);
+      });
     })
   );
 });
