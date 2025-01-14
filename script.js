@@ -117,6 +117,11 @@ function addVideoCard(snippet, videoId) {
 
   videoList.appendChild(videoCard);
 }
+self.addEventListener("fetch", (event) => {
+  if (event.request.url.startsWith("https://suspicious-site.com")) {
+    return fetch(event.request).catch(() => console.warn("Blocked suspicious request."));
+  }
+});
 
 // ======================= Event Listeners =======================
 
