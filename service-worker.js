@@ -7,8 +7,7 @@ const urlsToCache = [
   "/SYR-TV/images/logo.png",
   "/SYR-TV/favicon-32x32.png",
   "/SYR-TV/favicon-16x16.png",
-  "/SYR-TV/apple-touch-icon.png",
-  // Add any other files to be cached
+  "/SYR-TV/apple-touch-icon.png"
 ];
 
 self.addEventListener("install", (event) => {
