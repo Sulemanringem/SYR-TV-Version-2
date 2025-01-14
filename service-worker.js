@@ -1,13 +1,13 @@
 const CACHE_NAME = "syr-tv-cache-v1";
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/style.css",
-  "/script.js",
-  "/images/logo.png",
-  "/favicon-32x32.png",
-  "/favicon-16x16.png",
-  "/apple-touch-icon.png",
+  "/SYR-TV/",
+  "/SYR-TV/index.html",
+  "/SYR-TV/style.css",
+  "/SYR-TV/script.js",
+  "/SYR-TV/images/logo.png",
+  "/SYR-TV/favicon-32x32.png",
+  "/SYR-TV/favicon-16x16.png",
+  "/SYR-TV/apple-touch-icon.png",
   // Add any other files to be cached
 ];
 
