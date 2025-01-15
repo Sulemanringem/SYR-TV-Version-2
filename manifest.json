@@ -35,7 +35,7 @@
     }
   }
 ],
-  "handle_links": ["/SYR-TV/"],
+  "handle_links": ["https://sulemanringem.github.io/SYR-TV/"],
   "protocol_handlers": [
     {
       "protocol": "mailto",
