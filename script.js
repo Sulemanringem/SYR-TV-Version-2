@@ -11,7 +11,7 @@ const micButton = document.querySelector(".mic-button");
 const showMoreButton = document.getElementById("show-more");
 
 // Constants
-const API_KEY = 'AIzaSyCgBmV2-W0AUvlqk7po_i1byEii3Bv3Puo'; // Replace with your API Key
+const API_KEY = 'AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4'; // Replace with your API Key
 let nextPageToken = null;
 
 // ======================= Helper Functions =======================
