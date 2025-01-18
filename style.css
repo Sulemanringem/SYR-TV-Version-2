@@ -299,6 +299,13 @@ body.sidebar-hidden .main-layout .sidebar {
   margin: 0.64rem 0;
   background: var(--light-gray-color);
 }
+.sidebar {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+body.sidebar-visible .sidebar {
+  transform: translateX(0);
+}
 
 .main-layout .content-wrapper {
   padding: 0 1rem;
