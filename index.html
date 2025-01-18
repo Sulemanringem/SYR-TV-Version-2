@@ -4,7 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="my0vK7p4ACw7YrxyMzWigDlOi85_wUhRKBsJlbbRcG4" />
- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://unicons.iconscout.com;">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://apis.google.com https://www.youtube.com https://www.googleapis.com;
+  style-src 'self' 'unsafe-inline' https://unicons.iconscout.com https://fonts.googleapis.com;
+  font-src 'self' https://unicons.iconscout.com https://fonts.gstatic.com;
+  connect-src 'self' https://www.googleapis.com https://www.youtube.com;
+  img-src 'self' data: https://i.ytimg.com https://unicons.iconscout.com;
+  frame-src 'self' https://www.youtube.com;
+">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/SYR-TV/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/SYR-TV/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/SYR-TV/favicon-16x16.png">
