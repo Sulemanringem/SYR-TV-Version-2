@@ -15,13 +15,8 @@
   <link rel="manifest" href="/SYR-TV/manifest.json">
   
   <!-- Service Worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/SYR-TV/service-worker.js").then(() => {
-        console.log("Service Worker Registered");
-      });
-    }
-  </script>
+<script src="/SYR-TV/register-service-worker.js"></script>
+
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
