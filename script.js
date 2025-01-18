@@ -207,6 +207,20 @@ showMoreButton.addEventListener("click", () => {
   const query = searchInput.value || "all";
   fetchYouTubeVideos(query, nextPageToken);
 });
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.classList.add("sidebar-hidden"); // Start with sidebar hidden
+  fetchTrendingVideos(); // Load videos
+});
+
+menuButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    document.body.classList.toggle("sidebar-hidden");
+  });
+});
+
+screenOverlay.addEventListener("click", () => {
+  document.body.classList.add("sidebar-hidden");
+});
 
 // ======================= Voice Search =======================
 if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
