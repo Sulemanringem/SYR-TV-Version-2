@@ -9,6 +9,7 @@ const categoryButtons = document.querySelectorAll(".category-button");
 const navLinks = document.querySelectorAll(".link-item");
 const micButton = document.querySelector(".mic-button");
 const showMoreButton = document.getElementById("show-more");
+const body = document.body;
 
 // Constants
 const API_KEY = 'AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4'; // Replace with your API Key
@@ -214,12 +215,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 menuButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    document.body.classList.toggle("sidebar-hidden");
+    document.body.classList.toggle("sidebar-visible");
   });
 });
 
 screenOverlay.addEventListener("click", () => {
-  document.body.classList.add("sidebar-hidden");
+  document.body.classList.add("sidebar-visible");
 });
 
 // ======================= Voice Search =======================
