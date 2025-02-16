@@ -10,9 +10,70 @@ const navLinks = document.querySelectorAll(".link-item");
 const micButton = document.querySelector(".mic-button");
 const showMoreButton = document.getElementById("show-more");
 const body = document.body;
+// DOM Elements
+const shortsContainer = document.getElementById("shorts-container");
+
+// YouTube API Key 
+const API_KEY = "AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4";
+
+// Function to Fetch YouTube Shorts Videos
+async function fetchYouTubeShorts() {
+    try {
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=shorts&type=video&key=${API_KEY}`
+        );
+        const data = await response.json();
+
+        data.items.forEach((video) => {
+            addShortsCard(video.snippet, video.id.videoId, "youtube");
+        });
+    } catch (error) {
+        console.error("Error fetching YouTube Shorts:", error);
+    }
+}
+
+// Function to Fetch Self-Hosted Shorts (You Need to Upload Video URLs)
+function fetchSelfHostedShorts() {
+    const selfHostedVideos = [
+        { title: "Self-Hosted Short 1", url: "videos/self_short1.mp4" },
+        { title: "Self-Hosted Short 2", url: "videos/self_short2.mp4" }
+    ];
+
+    selfHostedVideos.forEach((video) => {
+        addShortsCard(video, video.url, "self-hosted");
+    });
+}
+
+// Function to Add Shorts Cards to the Shorts Section
+function addShortsCard(snippet, videoId, source) {
+    const shortCard = document.createElement("div");
+    shortCard.classList.add("short-card");
+
+    let videoSrc = "";
+    if (source === "youtube") {
+        videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+    } else if (source === "self-hosted") {
+        videoSrc = videoId;
+    }
+
+    shortCard.innerHTML = `
+        <video src="${videoSrc}" autoplay loop muted></video>
+        <div class="overlay">
+            <p class="title">${snippet.title || "Self-Hosted Video"}</p>
+        </div>
+    `;
+
+    shortsContainer.appendChild(shortCard);
+}
+
+// Load Shorts on Page Load
+document.addEventListener("DOMContentLoaded", () => {
+    fetchYouTubeShorts();
+    fetchSelfHostedShorts();
+});
 
 // Constants
-const API_KEY = 'AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4'; // Replace with your API Key
+const API_KEY = 'AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4'; // API Key
 let nextPageToken = null;
 
 // ======================= Helper Functions =======================
