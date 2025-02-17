@@ -99,3 +99,31 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchSelfHostedShorts();
     document.body.classList.add("sidebar-hidden");
 });
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM fully loaded");
+
+    const shortsContainer = document.getElementById("shorts-container");
+    if (!shortsContainer) {
+        console.error("Error: 'shorts-container' not found in the DOM.");
+        return; // Stop execution if the container is missing
+    }
+
+    const menuButtons = document.querySelectorAll(".menu-button");
+    menuButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            document.body.classList.toggle("sidebar-visible");
+        });
+    });
+
+    const screenOverlay = document.querySelector(".screen-overlay");
+    if (screenOverlay) {
+        screenOverlay.addEventListener("click", () => {
+            document.body.classList.remove("sidebar-visible");
+        });
+    } else {
+        console.warn("Warning: screenOverlay not found.");
+    }
+
+    fetchYouTubeShorts();
+    fetchSelfHostedShorts();
+});
