@@ -97,4 +97,5 @@ shortsModal.addEventListener("click", () => {
 document.addEventListener("DOMContentLoaded", () => {
     fetchYouTubeShorts();
     fetchSelfHostedShorts();
+    document.body.classList.add("sidebar-hidden");
 });
