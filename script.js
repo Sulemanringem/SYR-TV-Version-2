@@ -9,71 +9,12 @@ const categoryButtons = document.querySelectorAll(".category-button");
 const navLinks = document.querySelectorAll(".link-item");
 const micButton = document.querySelector(".mic-button");
 const showMoreButton = document.getElementById("show-more");
-const body = document.body;
-// DOM Elements
 const shortsContainer = document.getElementById("shorts-container");
+const body = document.body;
 
-// YouTube API Key 
-const API_KEY = "AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4";
+// YouTube API Key (Replace with your actual key)
+const API_KEY = "AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4"; // Use only once
 
-// Function to Fetch YouTube Shorts Videos
-async function fetchYouTubeShorts() {
-    try {
-        const response = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=shorts&type=video&key=${API_KEY}`
-        );
-        const data = await response.json();
-
-        data.items.forEach((video) => {
-            addShortsCard(video.snippet, video.id.videoId, "youtube");
-        });
-    } catch (error) {
-        console.error("Error fetching YouTube Shorts:", error);
-    }
-}
-
-// Function to Fetch Self-Hosted Shorts (You Need to Upload Video URLs)
-function fetchSelfHostedShorts() {
-    const selfHostedVideos = [
-        { title: "Self-Hosted Short 1", url: "videos/self_short1.mp4" },
-        { title: "Self-Hosted Short 2", url: "videos/self_short2.mp4" }
-    ];
-
-    selfHostedVideos.forEach((video) => {
-        addShortsCard(video, video.url, "self-hosted");
-    });
-}
-
-// Function to Add Shorts Cards to the Shorts Section
-function addShortsCard(snippet, videoId, source) {
-    const shortCard = document.createElement("div");
-    shortCard.classList.add("short-card");
-
-    let videoSrc = "";
-    if (source === "youtube") {
-        videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
-    } else if (source === "self-hosted") {
-        videoSrc = videoId;
-    }
-
-    shortCard.innerHTML = `
-        <video src="${videoSrc}" autoplay loop muted></video>
-        <div class="overlay">
-            <p class="title">${snippet.title || "Self-Hosted Video"}</p>
-        </div>
-    `;
-
-    shortsContainer.appendChild(shortCard);
-}
-
-// Load Shorts on Page Load
-document.addEventListener("DOMContentLoaded", () => {
-    fetchYouTubeShorts();
-    fetchSelfHostedShorts();
-});
-
-// Constants
-const API_KEY = 'AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4'; // API Key
 let nextPageToken = null;
 
 // ======================= Helper Functions =======================
@@ -106,10 +47,8 @@ async function fetchTrendingVideos() {
 
     const data = await response.json();
 
-    // Clear existing videos
-    videoList.innerHTML = "";
+    videoList.innerHTML = ""; // Clear existing videos
 
-    // Add video cards to the list
     data.items.forEach((video) => {
       const snippet = video.snippet;
       const videoId = video.id;
@@ -123,7 +62,57 @@ async function fetchTrendingVideos() {
   }
 }
 
-// Fetch Videos from YouTube API
+// Fetch YouTube Shorts Videos
+async function fetchYouTubeShorts() {
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=shorts&type=video&key=${API_KEY}`
+    );
+    const data = await response.json();
+
+    data.items.forEach((video) => {
+      addShortsCard(video.snippet, video.id.videoId, "youtube");
+    });
+  } catch (error) {
+    console.error("Error fetching YouTube Shorts:", error);
+  }
+}
+
+// Fetch Self-Hosted Shorts
+function fetchSelfHostedShorts() {
+  const selfHostedVideos = [
+    { title: "Self-Hosted Short 1", url: "videos/self_short1.mp4" },
+    { title: "Self-Hosted Short 2", url: "videos/self_short2.mp4" }
+  ];
+
+  selfHostedVideos.forEach((video) => {
+    addShortsCard(video, video.url, "self-hosted");
+  });
+}
+
+// Function to Add Shorts Cards to the Shorts Section
+function addShortsCard(snippet, videoId, source) {
+  const shortCard = document.createElement("div");
+  shortCard.classList.add("short-card");
+
+  let videoSrc = "";
+  if (source === "youtube") {
+    videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+  } else if (source === "self-hosted") {
+    videoSrc = videoId;
+  }
+
+  shortCard.innerHTML = `
+        <video src="${videoSrc}" autoplay loop muted></video>
+        <div class="overlay">
+            <p class="title">${snippet.title || "Self-Hosted Video"}</p>
+        </div>
+    `;
+
+  shortsContainer.appendChild(shortCard);
+}
+
+// Fetch Regular YouTube Videos
 async function fetchYouTubeVideos(query = "", pageToken = "") {
   try {
     showLoading();
@@ -134,22 +123,15 @@ async function fetchYouTubeVideos(query = "", pageToken = "") {
 
     nextPageToken = data.nextPageToken || null;
 
-    // Clear the video list if it's a new search (no page token)
-    if (!pageToken) videoList.innerHTML = "";
+    if (!pageToken) videoList.innerHTML = ""; // Clear list if it's a new search
 
-    // Add video cards to the list
     data.items.forEach((item) => {
       if (item.id.kind === "youtube#video") {
         addVideoCard(item.snippet, item.id.videoId);
       }
     });
 
-    // Show or hide the "Show More" button based on nextPageToken
-    if (nextPageToken) {
-      showMoreButton.style.display = "block";
-    } else {
-      showMoreButton.style.display = "none";
-    }
+    showMoreButton.style.display = nextPageToken ? "block" : "none";
 
     hideLoading();
   } catch (error) {
@@ -179,42 +161,8 @@ function addVideoCard(snippet, videoId) {
 
   videoList.appendChild(videoCard);
 }
-self.addEventListener("fetch", (event) => {
-  if (event.request.url.startsWith("https://suspicious-site.com")) {
-    return fetch(event.request).catch(() => console.warn("Blocked suspicious request."));
-  }
-});
 
 // ======================= Event Listeners =======================
-
-// Function to load and play video
-function loadVideo(videoId) {
-  const videoPlayer = document.getElementById("video-player");
-  const videoIframe = document.getElementById("video-iframe");
-
-  videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-  videoPlayer.style.display = "block";
-}
-
-// Close the video player
-const closePlayerButton = document.getElementById("close-player");
-if (closePlayerButton) {
-  closePlayerButton.addEventListener("click", () => {
-    const videoPlayer = document.getElementById("video-player");
-    const videoIframe = document.getElementById("video-iframe");
-    videoIframe.src = "";
-    videoPlayer.style.display = "none";
-  });
-}
-
-// Event listener to play video when thumbnail or play icon is clicked
-videoList.addEventListener("click", (event) => {
-  const thumbnail = event.target.closest(".thumbnail-container");
-  if (thumbnail) {
-    const videoId = thumbnail.dataset.videoId;
-    loadVideo(videoId);
-  }
-});
 
 // Sidebar Navigation Click
 navLinks.forEach((link) => {
@@ -225,6 +173,10 @@ navLinks.forEach((link) => {
     switch (linkText) {
       case "Home":
         fetchTrendingVideos();
+        break;
+      case "Shorts":
+        fetchYouTubeShorts();
+        fetchSelfHostedShorts();
         break;
       case "Settings":
         alert("Settings page coming soon!");
@@ -269,61 +221,16 @@ showMoreButton.addEventListener("click", () => {
   const query = searchInput.value || "all";
   fetchYouTubeVideos(query, nextPageToken);
 });
-document.addEventListener("DOMContentLoaded", () => {
-  document.body.classList.add("sidebar-hidden"); // Start with sidebar hidden
-  fetchTrendingVideos(); // Load videos
-});
-
-menuButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    document.body.classList.toggle("sidebar-visible");
-  });
-});
-
-screenOverlay.addEventListener("click", () => {
-  document.body.classList.add("sidebar-visible");
-});
-
-// ======================= Voice Search =======================
-if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
-
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-
-  micButton.addEventListener("click", () => {
-    micButton.classList.add("active");
-    recognition.start();
-  });
-
-  recognition.addEventListener("result", (event) => {
-    micButton.classList.remove("active");
-    const query = event.results[0][0].transcript;
-    searchInput.value = query;
-    fetchYouTubeVideos(query);
-  });
-
-  recognition.addEventListener("end", () => {
-    micButton.classList.remove("active");
-  });
-
-  recognition.addEventListener("error", (event) => {
-    micButton.classList.remove("active");
-    console.error("Voice recognition error:", event.error);
-    alert("Could not process your voice. Please try again.");
-  });
-} else {
-  micButton.style.display = "none";
-  console.warn("Speech Recognition API not supported in this browser.");
-}
 
 // ======================= Initialize Page =======================
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchTrendingVideos();
+  fetchYouTubeShorts();
+  fetchSelfHostedShorts();
 });
-// Sidebar Menu Toggle
+
+// Sidebar Toggle
 menuButtons.forEach((button) => {
   button.addEventListener("click", () => {
     document.body.classList.toggle("sidebar-hidden");
@@ -334,43 +241,10 @@ screenOverlay.addEventListener("click", () => {
   document.body.classList.toggle("sidebar-hidden");
 });
 
-// Sidebar Navigation Click
-navLinks.forEach((link) => {
-  link.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    const linkText = link.textContent.trim();
-    switch (linkText) {
-      case "Home":
-        fetchTrendingVideos();
-        break;
-      case "Settings":
-        alert("Settings page coming soon!");
-        break;
-      case "Help":
-        alert("Help page coming soon!");
-        break;
-      case "Report":
-        alert("Report functionality coming soon!");
-        break;
-      case "Feedback":
-        alert("Feedback page coming soon!");
-        break;
-      default:
-        fetchYouTubeVideos(linkText);
-    }
-
-    navLinks.forEach((nav) => nav.classList.remove("active"));
-    link.classList.add("active");
-  });
-});
-
 // Dark Mode Toggle
 if (localStorage.getItem("darkMode") === "enabled") {
   document.body.classList.add("dark-mode");
   themeButton.classList.replace("uil-moon", "uil-sun");
-} else {
-  themeButton.classList.replace("uil-sun", "uil-moon");
 }
 
 themeButton.addEventListener("click", () => {
