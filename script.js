@@ -95,33 +95,36 @@ shortsModal.addEventListener("click", () => {
 
 // Load Shorts on Page Load
 document.addEventListener("DOMContentLoaded", () => {
-    fetchYouTubeShorts();
-    fetchSelfHostedShorts();
-    document.body.classList.add("sidebar-hidden");
-});
-document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM fully loaded");
 
+    const menuButtons = document.querySelectorAll(".menu-button");
+    const screenOverlay = document.querySelector(".screen-overlay");
     const shortsContainer = document.getElementById("shorts-container");
-    if (!shortsContainer) {
-        console.error("Error: 'shorts-container' not found in the DOM.");
-        return; // Stop execution if the container is missing
+
+    // Fix for menu buttons
+    if (menuButtons.length > 0) {
+        menuButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                document.body.classList.toggle("sidebar-visible");
+            });
+        });
+    } else {
+        console.warn("Warning: No menu buttons found.");
     }
 
-    const menuButtons = document.querySelectorAll(".menu-button");
-    menuButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            document.body.classList.toggle("sidebar-visible");
-        });
-    });
-
-    const screenOverlay = document.querySelector(".screen-overlay");
+    // Fix for screen overlay
     if (screenOverlay) {
         screenOverlay.addEventListener("click", () => {
             document.body.classList.remove("sidebar-visible");
         });
     } else {
         console.warn("Warning: screenOverlay not found.");
+    }
+
+    // Fix for shorts container
+    if (!shortsContainer) {
+        console.error("Error: 'shorts-container' not found in the DOM.");
+        return; // Stop execution if the container is missing
     }
 
     fetchYouTubeShorts();
