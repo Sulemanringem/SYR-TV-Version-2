@@ -657,35 +657,42 @@ body.sidebar-visible .sidebar {
   overflow-x: auto;
   gap: 10px;
   padding-bottom: 10px;
+  /* Ensure the container doesn’t wrap items */
+  white-space: nowrap;
 }
 
+/* Each short card (thumbnail) */
 .short-card {
-  min-width: 180px;
-  width: 200px;
-  height: 360px;
+  flex: 0 0 auto;  /* Fixed size, no wrapping */
+  width: 150px;    /* Reduced width for multiple items in a row */
+  height: 250px;   /* Reduced height for a compact view */
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  background: black;
+  background: #000;
   cursor: pointer;
 }
 
-.short-card video {
+/* Thumbnail image styling */
+.short-card img.thumbnail {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* Overlay for video title */
 .short-card .overlay {
   position: absolute;
   bottom: 0;
   width: 100%;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-  padding: 10px;
-  color: white;
+  padding: 5px;
+  color: #fff;
 }
 
+/* Title inside the overlay */
 .short-card .title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
+  margin: 0;
 }
