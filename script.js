@@ -53,6 +53,7 @@ async function fetchYouTubeShorts() {
         data.items.forEach((video) => {
             addShortsCard(video.snippet, video.id.videoId, "youtube");
         });
+
         hideLoading();
     } catch (error) {
         console.error("Error fetching YouTube Shorts:", error);
@@ -79,7 +80,7 @@ function addShortsCard(snippet, videoId, source) {
     
     let videoSrc = "";
     if (source === "youtube") {
-        videoSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&mute=1`;
+        videoSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1`;
     } else if (source === "self-hosted") {
         videoSrc = videoId;
     }
@@ -93,13 +94,13 @@ function addShortsCard(snippet, videoId, source) {
     shortsContainer.appendChild(shortCard);
 }
 
-// Open Shorts in Fullscreen
+// Ensure Clicking Shorts Opens Fullscreen
 shortsContainer.addEventListener("click", (event) => {
     const videoElement = event.target.closest(".short-video");
     if (videoElement) {
         const videoSrc = videoElement.dataset.videoSrc;
         shortsPlayer.src = videoSrc;
-        shortsModal.style.display = "block";
+        shortsModal.style.display = "flex"; // Show modal
     }
 });
 
