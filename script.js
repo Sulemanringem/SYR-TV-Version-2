@@ -17,6 +17,11 @@ const loadingOverlay = document.getElementById("loading-overlay");
 // API Key
 const API_KEY = "AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4";
 
+// Fix: Ensure screen overlay doesn't block interaction
+if (screenOverlay) {
+    screenOverlay.style.display = "none"; // Hide overlay if still active
+}
+
 // Sidebar Toggle
 menuButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -95,14 +100,16 @@ function addShortsCard(snippet, videoId, source) {
     shortsContainer.appendChild(shortCard);
 }
 
-// Open Shorts in Fullscreen
+// Fix: Attach event listener to handle video clicks properly
 document.addEventListener("click", (event) => {
     const videoElement = event.target.closest(".short-video");
     if (videoElement) {
         console.log("Short clicked:", videoElement.dataset.videoSrc);
         const videoSrc = videoElement.dataset.videoSrc;
-        shortsPlayer.src = videoSrc;
-        shortsModal.style.display = "block";
+        if (shortsPlayer && shortsModal) {
+            shortsPlayer.src = videoSrc;
+            shortsModal.style.display = "block";
+        }
     }
 });
 
