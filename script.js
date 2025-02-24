@@ -12,6 +12,7 @@ const showMoreButton = document.getElementById("show-more");
 const shortsContainer = document.getElementById("shorts-container");
 const shortsModal = document.getElementById("shorts-modal");
 const shortsPlayer = document.getElementById("shorts-player");
+const loadingOverlay = document.getElementById("loading-overlay");
 
 // API Key
 const API_KEY = "AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4";
@@ -27,6 +28,13 @@ screenOverlay.addEventListener("click", () => {
     document.body.classList.remove("sidebar-visible");
 });
 
+// Hide Loading Animation
+function hideLoading() {
+    if (loadingOverlay) {
+        loadingOverlay.style.display = "none";
+    }
+}
+
 // Fetch YouTube Shorts
 async function fetchYouTubeShorts() {
     try {
@@ -39,8 +47,10 @@ async function fetchYouTubeShorts() {
         data.items.forEach((video) => {
             addShortsCard(video.snippet, video.id.videoId, "youtube");
         });
+        hideLoading();
     } catch (error) {
         console.error("Error fetching YouTube Shorts:", error);
+        hideLoading();
     }
 }
 
@@ -76,12 +86,6 @@ function addShortsCard(snippet, videoId, source) {
     
     shortsContainer.appendChild(shortCard);
 }
-
-// Debugging Logs
-console.log("Shorts Container:", shortsContainer);
-console.log("Fetching YouTube Shorts...");
-fetchYouTubeShorts();
-fetchSelfHostedShorts();
 
 // Open Shorts in Fullscreen
 shortsContainer.addEventListener("click", (event) => {
