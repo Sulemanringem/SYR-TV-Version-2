@@ -43,6 +43,12 @@ async function fetchYouTubeShorts() {
         );
         const data = await response.json();
         
+        if (!data.items || data.items.length === 0) {
+            console.error("No Shorts found.");
+            hideLoading();
+            return;
+        }
+
         shortsContainer.innerHTML = "";
         data.items.forEach((video) => {
             addShortsCard(video.snippet, video.id.videoId, "youtube");
@@ -104,7 +110,7 @@ shortsModal.addEventListener("click", () => {
 });
 
 // Load Shorts on Page Load
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", () => {
     console.log("Page Loaded, Fetching Shorts...");
     fetchYouTubeShorts();
     fetchSelfHostedShorts();
