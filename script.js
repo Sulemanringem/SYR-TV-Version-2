@@ -38,6 +38,7 @@ function hideLoading() {
 // Fetch YouTube Shorts
 async function fetchYouTubeShorts() {
     try {
+        console.log("Fetching YouTube Shorts...");
         const response = await fetch(
             `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=shorts&type=video&key=${API_KEY}`
         );
@@ -49,7 +50,7 @@ async function fetchYouTubeShorts() {
             return;
         }
 
-        shortsContainer.innerHTML = "";
+        shortsContainer.innerHTML = ""; // Clear previous shorts
         data.items.forEach((video) => {
             addShortsCard(video.snippet, video.id.videoId, "youtube");
         });
@@ -80,7 +81,7 @@ function addShortsCard(snippet, videoId, source) {
     
     let videoSrc = "";
     if (source === "youtube") {
-        videoSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1`;
+        videoSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&mute=1`;
     } else if (source === "self-hosted") {
         videoSrc = videoId;
     }
@@ -94,24 +95,28 @@ function addShortsCard(snippet, videoId, source) {
     shortsContainer.appendChild(shortCard);
 }
 
-// Ensure Clicking Shorts Opens Fullscreen
-shortsContainer.addEventListener("click", (event) => {
+// Open Shorts in Fullscreen
+document.addEventListener("click", (event) => {
     const videoElement = event.target.closest(".short-video");
     if (videoElement) {
+        console.log("Short clicked:", videoElement.dataset.videoSrc);
         const videoSrc = videoElement.dataset.videoSrc;
         shortsPlayer.src = videoSrc;
-        shortsModal.style.display = "flex"; // Show modal
+        shortsModal.style.display = "block";
     }
 });
 
 // Close Shorts Modal
-shortsModal.addEventListener("click", () => {
-    shortsModal.style.display = "none";
-    shortsPlayer.src = "";
-});
+if (shortsModal) {
+    shortsModal.addEventListener("click", () => {
+        console.log("Closing Shorts Modal...");
+        shortsModal.style.display = "none";
+        shortsPlayer.src = "";
+    });
+}
 
-// Load Shorts on Page Load
-window.addEventListener("load", () => {
+// Ensure Videos Load on Page Load
+document.addEventListener("DOMContentLoaded", () => {
     console.log("Page Loaded, Fetching Shorts...");
     fetchYouTubeShorts();
     fetchSelfHostedShorts();
