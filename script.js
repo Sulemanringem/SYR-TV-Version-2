@@ -12,33 +12,35 @@ const showMoreButton = document.getElementById("show-more");
 const shortsContainer = document.getElementById("shorts-container");
 const shortsModal = document.getElementById("shorts-modal");
 const shortsPlayer = document.getElementById("shorts-player");
+const closeShortModalButton = document.getElementById("close-short-modal");
 const loadingOverlay = document.getElementById("loading-overlay");
 
 // API Key
 const API_KEY = "AIzaSyCmH-DDECRKwL8MGjg-oZN4eRSGmZGoXH4";
 
-// Fix: Ensure screen overlay doesn't block interaction
-if (screenOverlay) {
-    screenOverlay.style.display = "none"; // Hide overlay if still active
-}
+// Global array to store shorts data and current index
+let shortsData = [];
+let currentShortIndex = 0;
 
-// Sidebar Toggle
+// --------------------- Sidebar & General Functions --------------------- //
 menuButtons.forEach((button) => {
     button.addEventListener("click", () => {
         document.body.classList.toggle("sidebar-visible");
     });
 });
+if (screenOverlay) {
+    screenOverlay.addEventListener("click", () => {
+        document.body.classList.remove("sidebar-visible");
+    });
+}
 
-screenOverlay.addEventListener("click", () => {
-    document.body.classList.remove("sidebar-visible");
-});
-
-// Hide Loading Animation
 function hideLoading() {
     if (loadingOverlay) {
         loadingOverlay.style.display = "none";
     }
 }
+
+// --------------------- Shorts Section --------------------- //
 
 // Fetch YouTube Shorts
 async function fetchYouTubeShorts() {
@@ -54,12 +56,19 @@ async function fetchYouTubeShorts() {
             hideLoading();
             return;
         }
-
-        shortsContainer.innerHTML = ""; // Clear previous shorts
-        data.items.forEach((video) => {
-            addShortsCard(video.snippet, video.id.videoId, "youtube");
+        
+        // Clear previous shorts and global data
+        shortsContainer.innerHTML = "";
+        shortsData = [];
+        
+        data.items.forEach((video, index) => {
+            const videoSrc = `https://www.youtube-nocookie.com/embed/${video.id.videoId}?autoplay=0&mute=1`;
+            shortsData.push({
+                videoSrc: videoSrc,
+                title: video.snippet.title
+            });
+            addShortsCard(video.snippet, video.id.videoId, "youtube", index);
         });
-
         hideLoading();
     } catch (error) {
         console.error("Error fetching YouTube Shorts:", error);
@@ -75,14 +84,21 @@ function fetchSelfHostedShorts() {
     ];
     
     selfHostedVideos.forEach((video) => {
-        addShortsCard(video, video.url, "self-hosted");
+        const index = shortsData.length;
+        shortsData.push({
+            videoSrc: video.url,
+            title: video.title
+        });
+        addShortsCard({ title: video.title, thumbnails: { high: { url: "placeholder.jpg" } } }, video.url, "self-hosted", index);
     });
 }
 
-// Add Shorts Cards
-function addShortsCard(snippet, videoId, source) {
+// Add a Shorts Card to the Feed
+function addShortsCard(snippet, videoId, source, index) {
     const shortCard = document.createElement("div");
     shortCard.classList.add("short-card");
+    // Store the index for swipe navigation
+    shortCard.setAttribute("data-index", index);
     
     let videoSrc = "";
     if (source === "youtube") {
@@ -90,41 +106,186 @@ function addShortsCard(snippet, videoId, source) {
     } else if (source === "self-hosted") {
         videoSrc = videoId;
     }
-
+    
     shortCard.innerHTML = `
         <div class="short-video" data-video-src="${videoSrc}">
-            <img src="${snippet.thumbnails?.high?.url || "placeholder.jpg"}" alt="${snippet.title || "Self-Hosted Video"}" class="thumbnail">
+            <img src="${snippet.thumbnails?.high?.url || 'placeholder.jpg'}" alt="${snippet.title || 'Self-Hosted Video'}" class="thumbnail">
+            <div class="play-icon"><i class="uil uil-play-circle"></i></div>
         </div>
+        <div class="short-info"><p class="short-title">${snippet.title || "Untitled"}</p></div>
     `;
-    
     shortsContainer.appendChild(shortCard);
 }
 
-// Fix: Attach event listener to handle video clicks properly
-document.addEventListener("click", (event) => {
-    const videoElement = event.target.closest(".short-video");
-    if (videoElement) {
-        console.log("Short clicked:", videoElement.dataset.videoSrc);
-        const videoSrc = videoElement.dataset.videoSrc;
-        if (shortsPlayer && shortsModal) {
-            shortsPlayer.src = videoSrc;
-            shortsModal.style.display = "block";
-        }
+// Open a Short in Fullscreen Modal
+function openShortModal(index) {
+    if (index < 0 || index >= shortsData.length) return;
+    currentShortIndex = index;
+    shortsPlayer.src = shortsData[currentShortIndex].videoSrc;
+    shortsModal.style.display = "flex";
+}
+
+// Attach Click Event to Shorts Feed (delegated)
+shortsContainer.addEventListener("click", (event) => {
+    const shortCard = event.target.closest(".short-card");
+    if (shortCard) {
+        const index = parseInt(shortCard.getAttribute("data-index"), 10);
+        console.log("Short card clicked, index:", index);
+        openShortModal(index);
     }
 });
 
-// Close Shorts Modal
-if (shortsModal) {
-    shortsModal.addEventListener("click", () => {
-        console.log("Closing Shorts Modal...");
+// Close the Shorts Modal via Dedicated Close Button
+if (closeShortModalButton) {
+    closeShortModalButton.addEventListener("click", (event) => {
+        event.stopPropagation();
         shortsModal.style.display = "none";
         shortsPlayer.src = "";
     });
 }
 
-// Ensure Videos Load on Page Load
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Page Loaded, Fetching Shorts...");
-    fetchYouTubeShorts();
-    fetchSelfHostedShorts();
+// Swipe Navigation in Modal (Basic Implementation)
+let touchStartY = 0;
+let touchEndY = 0;
+const swipeThreshold = 50; // in pixels
+
+shortsModal.addEventListener("touchstart", (event) => {
+    touchStartY = event.touches[0].clientY;
+});
+
+shortsModal.addEventListener("touchend", (event) => {
+    touchEndY = event.changedTouches[0].clientY;
+    const diff = touchStartY - touchEndY;
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0 && currentShortIndex < shortsData.length - 1) {
+            // Swipe Up: Next Video
+            openShortModal(currentShortIndex + 1);
+        } else if (diff < 0 && currentShortIndex > 0) {
+            // Swipe Down: Previous Video
+            openShortModal(currentShortIndex - 1);
+        }
+    }
+});
+
+// --------------------- Regular Video Functions (unchanged) --------------------- //
+async function fetchTrendingVideos() {
+    try {
+        showLoading();
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&chart=mostPopular&regionCode=US&maxResults=10&key=${API_KEY}`
+        );
+        const data = await response.json();
+        videoList.innerHTML = "";
+        data.items.forEach((video) => {
+            const snippet = video.snippet;
+            const videoId = video.id;
+            addVideoCard(snippet, videoId);
+        });
+        hideLoading();
+    } catch (error) {
+        hideLoading();
+        console.error("Error fetching trending videos:", error);
+    }
+}
+
+async function fetchYouTubeVideos(query = "", pageToken = "") {
+    try {
+        showLoading();
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${query}&part=snippet,id&order=relevance&type=video&maxResults=10&pageToken=${pageToken}`
+        );
+        const data = await response.json();
+        nextPageToken = data.nextPageToken || null;
+        if (!pageToken) videoList.innerHTML = "";
+        data.items.forEach((item) => {
+            if (item.id.kind === "youtube#video") {
+                addVideoCard(item.snippet, item.id.videoId);
+            }
+        });
+        showMoreButton.style.display = nextPageToken ? "block" : "none";
+        hideLoading();
+    } catch (error) {
+        hideLoading();
+        console.error("Failed to fetch videos:", error);
+    }
+}
+
+function addVideoCard(snippet, videoId) {
+    const videoCard = document.createElement("div");
+    videoCard.classList.add("video-card");
+    videoCard.innerHTML = `
+        <div class="thumbnail-container" data-video-id="${videoId}">
+            <img src="${snippet.thumbnails.high.url}" alt="${snippet.title}" class="thumbnail">
+            <div class="play-icon"><i class="uil uil-play-circle"></i></div>
+        </div>
+        <div class="video-details">
+            <h2 class="title">${snippet.title}</h2>
+            <p class="channel-name">${snippet.channelTitle}</p>
+            <p class="views">Published on: ${new Date(snippet.publishedAt).toDateString()}</p>
+        </div>
+    `;
+    videoList.appendChild(videoCard);
+}
+
+// --------------------- Other Event Listeners --------------------- //
+navLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+        event.preventDefault();
+        const linkText = link.textContent.trim();
+        switch (linkText) {
+            case "Home":
+                fetchTrendingVideos();
+                break;
+            case "Settings":
+                alert("Settings page coming soon!");
+                break;
+            case "Help":
+                alert("Help page coming soon!");
+                break;
+            case "Report":
+                alert("Report functionality coming soon!");
+                break;
+            case "Feedback":
+                alert("Feedback page coming soon!");
+                break;
+            default:
+                fetchYouTubeVideos(linkText);
+        }
+        navLinks.forEach((nav) => nav.classList.remove("active"));
+        link.classList.add("active");
+    });
+});
+
+searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const query = searchInput.value.trim();
+    if (query) fetchYouTubeVideos(query);
+});
+
+categoryButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        const category = button.textContent.trim();
+        fetchYouTubeVideos(category);
+        categoryButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+    });
+});
+
+showMoreButton.addEventListener("click", () => {
+    const query = searchInput.value || "all";
+    fetchYouTubeVideos(query, nextPageToken);
+});
+
+// --------------------- Dark Mode Toggle --------------------- //
+if (localStorage.getItem("darkMode") === "enabled") {
+    document.body.classList.add("dark-mode");
+    themeButton.classList.replace("uil-moon", "uil-sun");
+} else {
+    themeButton.classList.replace("uil-sun", "uil-moon");
+}
+themeButton.addEventListener("click", () => {
+    const isDarkMode = document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", isDarkMode ? "enabled" : "disabled");
+    themeButton.classList.toggle("uil-sun", isDarkMode);
+    themeButton.classList.toggle("uil-moon", !isDarkMode);
 });
