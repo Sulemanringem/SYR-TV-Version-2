@@ -34,11 +34,16 @@ if (screenOverlay) {
     });
 }
 
+// Hide Loading Animation (with logging)
 function hideLoading() {
+    console.log("hideLoading called");
     if (loadingOverlay) {
         loadingOverlay.style.display = "none";
     }
 }
+
+// Fallback: Hide loading after 10 seconds in case something stalls
+setTimeout(hideLoading, 10000);
 
 // --------------------- Shorts Section --------------------- //
 
@@ -57,9 +62,8 @@ async function fetchYouTubeShorts() {
             return;
         }
         
-        // Clear previous shorts and global data
-        shortsContainer.innerHTML = "";
-        shortsData = [];
+        shortsContainer.innerHTML = ""; // Clear previous shorts
+        shortsData = []; // Clear global array
         
         data.items.forEach((video, index) => {
             const videoSrc = `https://www.youtube-nocookie.com/embed/${video.id.videoId}?autoplay=0&mute=1`;
@@ -93,11 +97,10 @@ function fetchSelfHostedShorts() {
     });
 }
 
-// Add a Shorts Card to the Feed
+// Add Shorts Card to the Feed
 function addShortsCard(snippet, videoId, source, index) {
     const shortCard = document.createElement("div");
     shortCard.classList.add("short-card");
-    // Store the index for swipe navigation
     shortCard.setAttribute("data-index", index);
     
     let videoSrc = "";
@@ -122,32 +125,23 @@ function openShortModal(index) {
     if (index < 0 || index >= shortsData.length) return;
     currentShortIndex = index;
     shortsPlayer.src = shortsData[currentShortIndex].videoSrc;
-    shortsModal.style.display = "flex";
+    shortsModal.style.display = "flex"; // Ensure modal covers full screen
 }
 
-// Attach Click Event to Shorts Feed (delegated)
-shortsContainer.addEventListener("click", (event) => {
+// Delegate click event for Shorts cards
+document.addEventListener("click", (event) => {
     const shortCard = event.target.closest(".short-card");
-    if (shortCard) {
+    if (shortCard && shortsContainer.contains(shortCard)) {
         const index = parseInt(shortCard.getAttribute("data-index"), 10);
         console.log("Short card clicked, index:", index);
         openShortModal(index);
     }
 });
 
-// Close the Shorts Modal via Dedicated Close Button
-if (closeShortModalButton) {
-    closeShortModalButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        shortsModal.style.display = "none";
-        shortsPlayer.src = "";
-    });
-}
-
 // Swipe Navigation in Modal (Basic Implementation)
 let touchStartY = 0;
 let touchEndY = 0;
-const swipeThreshold = 50; // in pixels
+const swipeThreshold = 50; // pixels
 
 shortsModal.addEventListener("touchstart", (event) => {
     touchStartY = event.touches[0].clientY;
@@ -158,13 +152,27 @@ shortsModal.addEventListener("touchend", (event) => {
     const diff = touchStartY - touchEndY;
     if (Math.abs(diff) > swipeThreshold) {
         if (diff > 0 && currentShortIndex < shortsData.length - 1) {
-            // Swipe Up: Next Video
             openShortModal(currentShortIndex + 1);
         } else if (diff < 0 && currentShortIndex > 0) {
-            // Swipe Down: Previous Video
             openShortModal(currentShortIndex - 1);
         }
     }
+});
+
+// Close Shorts Modal via Close Button
+if (closeShortModalButton) {
+    closeShortModalButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        shortsModal.style.display = "none";
+        shortsPlayer.src = "";
+    });
+}
+
+// Load Shorts on Page Load
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Page Loaded, Fetching Shorts...");
+    fetchYouTubeShorts();
+    fetchSelfHostedShorts();
 });
 
 // --------------------- Regular Video Functions (unchanged) --------------------- //
@@ -227,7 +235,7 @@ function addVideoCard(snippet, videoId) {
     videoList.appendChild(videoCard);
 }
 
-// --------------------- Other Event Listeners --------------------- //
+// Regular Video Event Listeners
 navLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
         event.preventDefault();
@@ -276,7 +284,7 @@ showMoreButton.addEventListener("click", () => {
     fetchYouTubeVideos(query, nextPageToken);
 });
 
-// --------------------- Dark Mode Toggle --------------------- //
+// Dark Mode Toggle
 if (localStorage.getItem("darkMode") === "enabled") {
     document.body.classList.add("dark-mode");
     themeButton.classList.replace("uil-moon", "uil-sun");
