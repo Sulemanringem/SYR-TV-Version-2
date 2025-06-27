@@ -1101,3 +1101,6 @@ html, body {
     left: 0;
   }
 }
+#startup-screen {
+  transition: opacity 0.5s ease;
+}
