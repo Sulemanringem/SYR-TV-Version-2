@@ -171,7 +171,13 @@
       startupScreen.style.pointerEvents = 'none';
       setTimeout(() => startupScreen.remove(), 500);
     });
-  }
+  } 
+
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/SYR-TV-Version-2/service-worker.js')
+    .then(reg => console.log('Service Worker registered!', reg))
+    .catch(err => console.error('Service Worker registration failed:', err));
+    }
   </script>
   <script src="/SYR-TV-Version-2/script.js"></script>
 </body>
