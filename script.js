@@ -52,20 +52,74 @@ const dom = {
   likedVideosLink: document.getElementById('liked-videos-link'),
   historyLink: document.getElementById('history-link')
 };
-window.addEventListener('DOMContentLoaded', () => {
-  const startupVideo = document.getElementById('startup-video');
+  window.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded');
 
-  if (startupVideo) {
-    startupVideo.addEventListener('ended', () => {
-      startupVideo.remove();
+    // Create video element
+    const startupVideo = document.createElement('video');
+    startupVideo.id = 'startup-video';
+    startupVideo.autoplay = true;
+    startupVideo.muted = true;
+    startupVideo.playsInline = true;
+
+    // Set source with GitHub Pages path check
+    const source = document.createElement('source');
+    source.src = location.pathname.includes('SYR-TV') ? '/SYR-TV/startup-animation.mp4' : './startup-animation.mp4';
+    source.type = 'video/mp4';
+    startupVideo.appendChild(source);
+
+    // Apply styles inline
+    Object.assign(startupVideo.style, {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '100vw',
+      height: '100vh',
+      objectFit: 'cover',
+      backgroundColor: '#000',
+      zIndex: '10000',
+      opacity: '0',
+      transition: 'opacity 0.5s ease-in-out',
+      pointerEvents: 'none'
     });
 
-    // Fallback in case video doesn't trigger "ended"
+    document.body.appendChild(startupVideo);
+    console.log('Video element added');
+
+    // Show video when first frame is loaded
+    startupVideo.addEventListener('loadeddata', () => {
+      console.log('Video loadeddata');
+      startupVideo.style.opacity = '1';
+    });
+
+    // Log play event
+    startupVideo.addEventListener('play', () => {
+      console.log('Video started playing');
+    });
+
+    // Fade out and remove on video end
+    startupVideo.addEventListener('ended', () => {
+      console.log('Video ended, removing it');
+      startupVideo.style.opacity = '0';
+      setTimeout(() => {
+        if (startupVideo.parentNode) {
+          startupVideo.remove();
+          console.log('Video element removed after fade-out');
+        }
+      }, 500); // Wait for fade-out
+    });
+
+    // Fallback: Remove after 7 seconds
     setTimeout(() => {
-      if (startupVideo) startupVideo.remove();
-    }, 6000); // Set to match your animation duration
-  }
-});
+      if (startupVideo.parentNode) {
+        console.log('Fallback timeout reached, forcing removal');
+        startupVideo.style.opacity = '0';
+        setTimeout(() => {
+          if (startupVideo.parentNode) startupVideo.remove();
+        }, 500);
+      }
+    }, 7000);
+  });
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   dom.loading.style.display = 'flex';
