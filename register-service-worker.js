@@ -1,5 +1,12 @@
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/SYR-TV/service-worker.js").then(() => {
-    console.log("Service Worker Registered");
-  });
-}
+self.addEventListener('install', event => {
+  console.log('[SW] Installed');
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+  console.log('[SW] Activated');
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(fetch(event.request));
+});
