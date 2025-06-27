@@ -1,4 +1,4 @@
-const CACHE_NAME = "syr-tv-cache-v1";
+const CACHE_NAME = "syr-tv-cache-v2";
 const urlsToCache = [
   "/SYR-TV/",
   "/SYR-TV/index.html",
