@@ -1,232 +1,164 @@
 <!DOCTYPE html>
-<!-- Coding By Sleiman Yahaya RIngem -->
 <html lang="en">
+<head>
+  <meta name="theme-color" content="#3b82f6">
+  <meta name="google-site-verification" content="my0vK7p4ACw7YrxyMzWigDlOi85_wUhRKBsJlbbRcG4" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="my0vK7p4ACw7YrxyMzWigDlOi85_wUhRKBsJlbbRcG4" />
-<meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' https://apis.google.com https://www.youtube.com https://www.googleapis.com;
-  style-src 'self' 'unsafe-inline' https://unicons.iconscout.com https://fonts.googleapis.com;
-  font-src 'self' https://unicons.iconscout.com https://fonts.gstatic.com;
-  connect-src 'self' https://www.googleapis.com https://www.youtube.com;
-  img-src 'self' data: https://i.ytimg.com https://unicons.iconscout.com;
-  frame-src 'self' https://www.youtube.com;
-">
-
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" defer></script>
+  <title>SYR TV</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/SYR-TV/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/SYR-TV/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/SYR-TV/favicon-16x16.png">
   <link rel="manifest" href="/SYR-TV/manifest.json">
   <title>SYR TV</title>
-  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="/SYR-TV/style.css">
   <script src="/SYR-TV/register-service-worker.js"></script>
 </head>
-
-
 <body>
+  <!-- Animated startup video overlay -->
+<video id="startup-video" autoplay muted playsinline>
+  <source src="startup-animation.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
   <div id="loading-overlay">
     <span>SYR TV</span>
   </div>
   
-
-  <div class="container">
-    <!-- Header / Navbar -->
-    <header>
-      <nav class="navbar">
-        <div class="nav-section nav-left">
-          <button class="nav-button menu-button">
-            <i class="uil uil-bars"></i>
-          </button>
-          <a href="#" class="nav-logo">
-            <img src="images/logo.png" alt="Logo" class="logo-image">
-            <h2 class="logo-text">SYR TV</h2>
-          </a>
-        </div>
-        
-        <div class="nav-section nav-center">
-          <form action="#" class="search-form">
-            <input type="search" placeholder="Search" class="search-input" required>
-            <button class="nav-button search-button">
-              <i class="uil uil-search"></i>
-            </button>
-          </form>
-          <button class="nav-button mic-button">
-            <i class="uil uil-microphone"></i>
-          </button>
-        </div>
-        
-        <div class="nav-section nav-right">
-        
-          <button class="nav-button theme-button">
-            <i class="uil uil-moon"></i>
-          </button>
-</div>
+  <header class="header">
+    <div class="header-left">
+      <span class="material-icons menu-icon">menu</span>
+      <img src="images/logo.png" alt="SYR TV" class="logo">
+    </div>
     
-		   </nav>
-    </header>
-    
-    <!-- Main Layout -->
-    <main class="main-layout">
-      <div class="screen-overlay"></div>
-
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="nav-section nav-left">
-          <button class="nav-button menu-button">
-            <i class="uil uil-bars"></i>
-          </button>
-          <a href="#" class="nav-logo">
-            <img src="images/logo.png" alt="Logo" class="logo-image">
-            <h2 class="logo-text">SYRTV</h2>
-          </a>
+    <div class="header-center">
+      <form class="search-form" id="search-form">
+        <input type="text" placeholder="Search" class="search-input" id="search-input">
+        <button type="submit" class="search-button">
+          <span class="material-icons">search</span>
+        </button>
+        <button class="mic-button" id="mic-button" type="button">
+          <span class="material-icons">mic</span>
+        </button>
+      </form>
+      <div class="search-suggestions" id="search-suggestions"></div>
+      <div class="search-history" id="search-history">
+        <div class="search-history-title">Recent Searches</div>
+        <div class="search-chips" id="search-chips"></div>
+        <div class="trending-searches">
+          <div class="trending-title">Trending Now</div>
+          <div class="trending-chips" id="trending-chips"></div>
         </div>
-
-        <div class="links-container">
-          <div class="link-section">
-<a href="#" class="link-item home-link">
-  <i class="uil uil-estate"></i> Home
-</a>
-
-            <a href="#" class="link-item">
-              <i class="uil uil-video"></i> Shorts
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-tv-retro"></i> Subscriptions
-            </a>
-          </div>
-          <div class="section-separator"></div>
-
-          <div class="link-section">
-            <h4 class="section-title">You</h4>
-            <a href="#" class="link-item">
-              <i class="uil uil-user-square"></i> Your channel
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-history"></i> History
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-clock"></i> Watch later
-            </a>
-          </div>
-          <div class="section-separator"></div>
-          
-          <div class="link-section">
-            <h4 class="section-title">Explore</h4>
-            <a href="#" class="link-item">
-              <i class="uil uil-fire"></i> Trending
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-music"></i> Music
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-basketball"></i> Gaming
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-trophy"></i> Sports
-            </a>
-          </div>
-          <div class="section-separator"></div>
-
-          <div class="link-section">
-           <div class="link-section">
-  <h4 class="section-title">More from YouTube</h4>
-  <a href="https://www.youtube.com/plus" class="link-item" target="_blank">
-    <i class="uil uil-shield-plus"></i> YouTube Plus
-  </a>
-  <a href="https://music.youtube.com" class="link-item" target="_blank">
-    <i class="uil uil-headphones-alt"></i> YouTube Music
-  </a>
-  <a href="https://www.youtubekids.com/" class="link-item" target="_blank">
-    <i class="uil uil-airplay"></i> YouTube Kids
-  </a>
-</div>
-
-          <div class="section-separator"></div>
-
-          <div class="link-section">
-            <a href="#" class="link-item">
-              <i class="uil uil-setting"></i> Settings
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-file-medical-alt"></i> Report
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-question-circle"></i> Help
-            </a>
-            <a href="#" class="link-item">
-              <i class="uil uil-exclamation-triangle"></i> Feedback
-            </a>
-          </div>
-        </div>
-      </aside>
-        
-     
-      <div class="content-wrapper">
-	      
-<!-- Shorts Section -->
-<section id="shorts-section">
-  <h2 class="shorts-title">Shorts</h2>
-  <div id="shorts-container"></div>
-</section>
-
-<!-- Shorts Modal (for fullscreen playback) -->
-<div id="shorts-modal" style="display: none;">
-  <button id="close-short-modal">Close</button>
-  <iframe id="shorts-player" frameborder="0" allow="autoplay; fullscreen"></iframe>
-</div>
-
- 
-<div id="video-player">
-  <iframe
-    id="video-iframe"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen>
-  </iframe>
-  <button id="close-player" class="close-button">Close</button>
-</div>
-
-        <!-- Category List -->
-        <div class="category-list">
-          <button class="category-button active">All</button>
-          <button class="category-button">Website</button>
-          <button class="category-button">Music</button>
-          <button class="category-button">Gaming</button>
-          <button class="category-button">Nollywood</button>
-          <button class="category-button">Kannywood</button>
-          <button class="category-button">Movies</button>
-          <button class="category-button">Thrillers</button>
-          <button class="category-button">Coding</button>
-          <button class="category-button">Sci-fi films</button>
-          <button class="category-button">Data analysis</button>
-          <button class="category-button">Web design</button>
-          <button class="category-button">HTML</button>
-          <button class="category-button">Tailwind</button>
-          <button class="category-button">CSS</button>
-          <button class="category-button">Express.js</button>
-        </div>
-		<div class="custom-video-player">
-  <div id="player"></div>
-</div>
-
-  <!-- Video List -->
-        <div class="video-list" id="video-list">
-		
-</div>
-
-          <!-- Videos will be dynamically loaded here -->
-		  <button id="show-more" style="display: none;">Show More</button>
-        <div id="recommendations" style="margin-top: 2rem;"></div>
-
       </div>
+    </div>
+    
+    <button class="mobile-search-btn" id="mobile-search-btn">
+      <span class="material-icons">search</span>
+    </button>
+    
+    <div class="platform-selector">
+      <button class="platform-btn active" data-platform="youtube">YouTube</button>
+      <button class="platform-btn" data-platform="syr">SYR TV</button>
+    </div>
+    
+    <div class="header-right">
+      <button id="upload-btn" class="header-icon">
+        <span class="material-icons">video_call</span>
+      </button>
+      <div class="auth-container">
+        <div id="signin-btn"></div>
+        <div id="user-dropdown" style="display: none;">
+          <img src="https://via.placeholder.com/32" class="user-avatar" id="user-avatar">
+          <div class="dropdown-content">
+            <a href="#" id="home-link"><span class="material-icons">home</span> Home</a>
+            <a href="#" id="liked-videos-link"><span class="material-icons">thumb_up</span> Liked Videos</a>
+            <a href="#" id="history-link"><span class="material-icons">history</span> History</a>
+            <a href="#" id="signout-btn"><span class="material-icons">logout</span> Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
 
+  <div class="main-container">
+    <aside class="sidebar" id="sidebar">
+      <nav>
+        <ul>
+          <li><a href="#" class="active nav-link" id="sidebar-home"><span class="material-icons">home</span> Home</a></li>
+          <li><a href="#" class="nav-link" id="sidebar-subscriptions"><span class="material-icons">subscriptions</span> Subscriptions</a></li>
+        </ul>
+        <hr>
+        <ul>
+          <li><a href="#" class="nav-link" id="sidebar-library"><span class="material-icons">video_library</span> Library</a></li>
+          <li><a href="#" class="nav-link" id="sidebar-history"><span class="material-icons">history</span> History</a></li>
+          <li><a href="#" class="nav-link" id="sidebar-liked"><span class="material-icons">thumb_up</span> Liked Videos</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="video-grid-container">
+      <div class="filter-bar">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Music</button>
+        <button class="filter-btn">Gaming</button>
+        <button class="filter-btn">Live</button>
+      </div>
+      <div class="video-grid" id="video-grid"></div>
     </main>
   </div>
-	<!-- Linking custom script -->
+
+  <div id="video-player">
+    <button id="close-player">
+      <span class="material-icons">close</span>
+    </button>
+    <iframe id="video-iframe" allowfullscreen></iframe>
+    <div class="player-info-container">
+      <h2 id="player-video-title">Video Title</h2>
+      <div class="player-actions">
+        <span id="player-channel-name">Channel Name</span>
+        <button class="player-action-btn" id="like-btn">
+          <span class="material-icons">thumb_up</span> Like
+        </button>
+      </div>
+      <div class="comment-section">
+        <h3>Comments</h3>
+        <div class="add-comment">
+          <img src="https://via.placeholder.com/40" class="user-avatar" id="comment-user-avatar">
+          <input type="text" id="comment-input" placeholder="Add a comment...">
+          <button id="comment-button">Comment</button>
+        </div>
+        <div class="comments-list" id="comments-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="upload-modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2>Upload Video</h2>
+      <form id="upload-form">
+        <div class="form-group">
+          <label for="upload-title">Title</label>
+          <input type="text" id="upload-title" required>
+        </div>
+        <div class="form-group">
+          <label for="upload-description">Description</label>
+          <textarea id="upload-description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="upload-file">Video File</label>
+          <input type="file" id="upload-file" accept="video/*" required>
+        </div>
+        <div class="form-group">
+          <label for="upload-thumbnail">Thumbnail</label>
+          <input type="file" id="upload-thumbnail" accept="image/*">
+        </div>
+        <button type="submit" class="upload-button">Upload</button>
+      </form>
+    </div>
+  </div>
   <script src="script.js"></script>
-	
 </body>
-  
 </html>
