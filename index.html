@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+up<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta name="theme-color" content="#3b82f6">
@@ -161,6 +161,18 @@
       </form>
     </div>
   </div>
+  <script>
+  const startupVideo = document.getElementById('startup-video');
+  const startupScreen = document.getElementById('startup-screen');
+
+  if (startupVideo) {
+    startupVideo.addEventListener('ended', () => {
+      startupScreen.style.opacity = '0';
+      startupScreen.style.pointerEvents = 'none';
+      setTimeout(() => startupScreen.remove(), 500);
+    });
+  }
+  </script>
   <script src="/SYR-TV-Version-2/script.js"></script>
 </body>
 </html>
