@@ -1,21 +1,49 @@
 {
   "name": "SYR TV",
   "short_name": "SYR TV",
-  "start_url": "./index.html",
+  "id": "/SYR-TV-Version-2/",
+  "start_url": "/SYR-TV-Version-2/index.html",
   "display": "standalone",
-  "theme_color": "#d62828",
-  "background_color": "#d62828",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
+  "description": "SYR TV: Watch, Upload & Enjoy Free Videos, Shorts, and More.",
   "icons": [
     {
-      "src": "./assets/icons/icon-192x192.png",
-      "sizes": "192x192",
+      "src": "/SYR-TV-Version-2/icon-512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "./assets/icons/icon-512x512.png",
-      "sizes": "512x512",
+      "src": "/SYR-TV-Version-2/icon-192x192.png",
+      "sizes": "192x192",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/SYR-TV-Version-2/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/SYR-TV-Version-2/index.html",
+      "accept": {
+        "video/mp4": [".mp4"],
+        "video/webm": [".webm"]
+      }
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "mailto",
+      "url": "/SYR-TV-Version-2/compose?to=%s"
+    },
+    {
+      "protocol": "tel",
+      "url": "/SYR-TV-Version-2/dial?number=%s"
     }
   ]
 }
