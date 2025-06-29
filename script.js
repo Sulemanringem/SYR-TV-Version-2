@@ -940,18 +940,37 @@ function showWatchHistory(e) {
 // Auth System
 function handleGoogleSignIn(response) {
   const payload = parseJWT(response.credential);
-  
-  google.accounts.oauth2.initTokenClient({
-    client_id: GOOGLE_CLIENT_ID,
-    scope: 'https://www.googleapis.com/auth/youtube.force-ssl',
-    callback: (tokenResponse) => {
-      currentUser = {
-        id: payload.sub,
-        name: payload.name,
-        email: payload.email,
-        avatar: payload.picture,
-        accessToken: tokenResponse.access_token,
-        syrData: JSON.parse(localStorage.getItem(`syr-user-${payload.sub}`)) || {
+
+  currentUser = {
+    id: payload.sub,
+    name: payload.name,
+    email: payload.email,
+    avatar: payload.picture,
+    syrData: JSON.parse(localStorage.getItem(`syr-user-${payload.sub}`)) || {
+      likes: [],
+      history: [],
+      searchHistory: []
+    }
+  };
+
+  // Restore search history
+  const savedHistory = localStorage.getItem('syr-tv-search-history');
+  if (savedHistory) {
+    currentUser.syrData.searchHistory = [
+      ...new Set([...JSON.parse(savedHistory), ...(currentUser.syrData.searchHistory || [])])
+    ];
+    localStorage.removeItem('syr-tv-search-history');
+  }
+
+  saveUserData();
+  updateUIForAuth();
+
+  if (dom.commentUserAvatar) {
+    dom.commentUserAvatar.src = currentUser.avatar;
+  }
+
+  console.log("Signed in as", currentUser.name);
+}`)) || {
           likes: [],
           history: [],
           searchHistory: []
