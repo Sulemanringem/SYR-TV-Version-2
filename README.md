@@ -31,6 +31,6 @@ It features a clean UI, fullscreen pop-up video player, swipe navigation, and dy
 ## 🛠️ Installation (For Local Testing)
 
 ```bash
-git clone https://github.com/yourusername/SYR-TV.git
+git clone https://github.com/Sulemanringem/SYR-TV.git
 cd SYR-TV
 # Open index.html with Live Server or any local web server
