@@ -24,7 +24,7 @@ It features a clean UI, fullscreen pop-up video player, swipe navigation, and dy
 
 ## 🌐 Live Demo
 
-➡️ [Click here to view SYR TV live on GitHub Pages](https://yourusername.github.io/SYR-TV/)  
+➡️ [Click here to view SYR TV live on GitHub Pages](https://sulemanringem.github.io/SYR-TV-Version-2/index.html)  
 
 ---
 
