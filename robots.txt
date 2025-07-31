@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sulemanringem.github.io/SYR-TV-Version-2/sitemap.xml
