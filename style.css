@@ -1104,3 +1104,211 @@ html, body {
 #startup-screen {
   transition: opacity 0.5s ease;
 }
+
+
+/* Ramadan Widget Styles */
+#ramadan-widget-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#ramadan-widget {
+  width: 320px;
+  background: linear-gradient(145deg, #0a3d62, #1e5799);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.widget-header {
+  padding: 16px 20px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.widget-header h3 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-display {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.widget-content {
+  padding: 20px;
+}
+
+.category-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.category-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.category-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.category-btn.active {
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+}
+
+.text-display {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  min-height: 140px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#daily-text {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+#daily-text .translation {
+  font-style: italic;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.text-reference {
+  font-size: 13px;
+  opacity: 0.8;
+  font-style: italic;
+  text-align: right;
+}
+
+.widget-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.widget-actions button {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+#refresh-btn {
+  background: #f6b93b;
+  color: #333;
+}
+
+#refresh-btn:hover {
+  background: #f7ca6b;
+}
+
+#share-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+#share-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.widget-footer {
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.day-counter {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+#day-count {
+  font-weight: bold;
+  color: #f6b93b;
+}
+
+#close-widget {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+#close-widget:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.temporary-indicator {
+  background: rgba(246, 185, 59, 0.2);
+  border: 1px solid rgba(246, 185, 59, 0.4);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #ramadan-widget-container {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+  }
+  
+  #ramadan-widget {
+    width: auto;
+    max-width: 100%;
+  }
+                              }
