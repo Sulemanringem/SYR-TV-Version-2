@@ -1075,3 +1075,335 @@ function hideLoading() {
     dom.loading.style.display = 'none';
   }, 300);
 }
+
+// Ramadan Daily Hadith & Azkar Widget
+(function() {
+  'use strict';
+  
+  // Ramadan data - 20 Hadiths and 20 Azkars
+  const ramadanData = {
+    hadith: [
+      { text: "Whoever fasts during Ramadan out of sincere faith and hoping for a reward from Allah, then all his past sins will be forgiven.", reference: "Bukhari" },
+      { text: "When the month of Ramadan starts, the gates of heaven are opened and the gates of Hell are closed and the devils are chained.", reference: "Bukhari" },
+      { text: "Fasting is a shield; so when one of you is fasting, he should neither indulge in obscene language nor should he raise his voice in anger.", reference: "Muslim" },
+      { text: "By Him in Whose Hands my soul is, the smell coming out from the mouth of a fasting person is better in the sight of Allah than the smell of musk.", reference: "Bukhari" },
+      { text: "There are two pleasures for the fasting person: one at the time of breaking his fast, and the other at the time when he will meet his Lord.", reference: "Bukhari" },
+      { text: "If one does not give up false speech and evil actions, Allah is not in need of his leaving his food and drink.", reference: "Bukhari" },
+      { text: "Whoever gives food to a fasting person with which to break his fast, he will have a reward equal to his, without it detracting in the slightest from the reward of the fasting person.", reference: "Tirmidhi" },
+      { text: "The five daily prayers, and Friday prayer to the next Friday prayer, and Ramadan to the next Ramadan, are expiation for the sins committed between them, so long as major sins are avoided.", reference: "Muslim" },
+      { text: "When you see the new moon of Ramadan, begin the fast, and when you see the new moon of Shawwal, break the fast. If it is cloudy, complete thirty days of Sha'ban.", reference: "Bukhari" },
+      { text: "Paradise has eight gates, and one of them is called Ar-Rayyan, through which none will enter but those who observe fasting.", reference: "Bukhari" },
+      { text: "Take sahur, for in sahur there is blessing.", reference: "Bukhari" },
+      { text: "People will continue to be upon good as long as they hasten to break the fast.", reference: "Bukhari" },
+      { text: "Whoever stands (in prayer) in Ramadan out of faith and in the hope of reward, his previous sins will be forgiven.", reference: "Bukhari" },
+      { text: "Fasting and the Quran will intercede for a person on the Day of Resurrection.", reference: "Ahmad" },
+      { text: "Whoever draws near to Allah during Ramadan with any good deed, it is as if he performed an obligatory act at any other time.", reference: "Bukhari" },
+      { text: "The month of Ramadan is the month of patience, and the reward for patience is Paradise.", reference: "Ibn Majah" },
+      { text: "Whoever provides food for a fasting person to break his fast with, then for him is the same reward as his, without that decreasing from the reward of the fasting person in the slightest.", reference: "Ibn Majah" },
+      { text: "Allah says: 'Every deed of the son of Adam is for him except fasting; it is for Me and I shall reward for it.'", reference: "Bukhari" },
+      { text: "The fasting person has two moments of joy: when he breaks his fast and when he meets his Lord.", reference: "Muslim" },
+      { text: "Fasting is half of patience.", reference: "Tirmidhi" }
+    ],
+    
+    azkar: [
+      { text: "اللَّهُمَّ لَكَ صُمْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ", translation: "O Allah, for You I have fasted, and with Your provision I break my fast.", reference: "Morning Dua" },
+      { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ الَّتِي وَسِعَتْ كُلَّ شَيْءٍ أَنْ تَغْفِرَ لِي", translation: "O Allah, I ask You by Your mercy which encompasses all things, that You forgive me.", reference: "General Dua" },
+      { text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ", translation: "Glory is to Allah and praise is to Him. Glory is to Allah the Almighty.", reference: "Morning/Evening" },
+      { text: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ", translation: "O Allah, help me to remember You, to give You thanks, and to worship You in an excellent manner.", reference: "Morning Dua" },
+      { text: "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", translation: "My Lord, forgive me and accept my repentance, for You are the Accepter of Repentance, the Most Merciful.", reference: "Evening Dua" },
+      { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا", translation: "O Allah, I ask You for beneficial knowledge, good provision, and accepted deeds.", reference: "Morning Dua" },
+      { text: "سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ", translation: "Glory is to Allah, and praise is to Allah, and there is none worthy of worship but Allah, and Allah is the Greatest.", reference: "General Dhikr" },
+      { text: "اللَّهُمَّ أَجِرْنِي مِنَ النَّارِ", translation: "O Allah, protect me from the Fire.", reference: "Seven Times Daily" },
+      { text: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", translation: "There is no power and no strength except with Allah.", reference: "Morning/Evening" },
+      { text: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ", translation: "O Allah, send prayers upon Muhammad and the family of Muhammad.", reference: "Blessing Prophet" },
+      { text: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", translation: "Our Lord, give us in this world good and in the Hereafter good, and save us from the punishment of the Fire.", reference: "Quran 2:201" },
+      { text: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، وَمِنْ عَذَابِ جَهَنَّمَ، وَمِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ، وَمِنْ شَرِّ فِتْنَةِ الْمَسِيحِ الدَّجَّالِ", translation: "O Allah, I seek refuge in You from the punishment of the grave, and from the punishment of Hellfire, and from the trials of life and death, and from the evil of the trial of the False Messiah.", reference: "Morning Dua" },
+      { text: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ", translation: "Allah is sufficient for me. None has the right to be worshipped but Him. I have placed my trust in Him, and He is the Lord of the Majestic Throne.", reference: "Seven Times Daily" },
+      { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَمَا قَرَّبَ إِلَيْهَا مِنْ قَوْلٍ أَوْ عَمَلٍ، وَأَعُوذُ بِكَ مِنَ النَّارِ وَمَا قَرَّبَ إِلَيْهَا مِنْ قَوْلٍ أَوْ عَمَلٍ", translation: "O Allah, I ask You for Paradise and for that which brings one closer to it, in word and deed. And I seek refuge in You from Hellfire and from that which brings one closer to it, in word and deed.", reference: "Morning Dua" },
+      { text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ عَدَدَ خَلْقِهِ وَرِضَا نَفْسِهِ وَزِنَةَ عَرْشِهِ وَمِدَادَ كَلِمَاتِهِ", translation: "Glory is to Allah and praise is to Him, by the multitude of His creation, by His Pleasure, by the weight of His Throne, and by the extent of His Words.", reference: "Morning Dhikr" },
+      { text: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْجُبْنِ وَالْبُخْلِ، وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ", translation: "O Allah, I seek refuge in You from anxiety and sorrow, weakness and laziness, miserliness and cowardice, the burden of debts and from being overpowered by men.", reference: "Morning Dua" },
+      { text: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", translation: "None has the right to be worshipped but Allah alone, with no partner or associate. His is the Dominion and to Him be praise, and He is able to do all things.", reference: "100 Times Daily" },
+      { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مُوجِبَاتِ رَحْمَتِكَ، وَعَزَائِمَ مَغْفِرَتِكَ، وَالسَّلَامَةَ مِنْ كُلِّ إِثْمٍ، وَالْغَنِيمَةَ مِنْ كُلِّ بِرٍّ، وَالْفَوْزَ بِالْجَنَّةِ، وَالنَّجَاةَ مِنَ النَّارِ", translation: "O Allah, I ask You for the means of Your mercy, the means of Your forgiveness, safety from every sin, the benefit of every good deed, success in attaining Paradise, and deliverance from the Fire.", reference: "Evening Dua" },
+      { text: "سُبْحَانَ اللَّهِ الْعَظِيمِ وَبِحَمْدِهِ", translation: "Glory is to Allah the Almighty and praise is to Him.", reference: "100 Times Daily" },
+      { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ فِعْلَ الْخَيْرَاتِ، وَتَرْكَ الْمُنْكَرَاتِ، وَحُبَّ الْمَسَاكِينِ، وَأَنْ تَغْفِرَ لِي، وَتَرْحَمَنِي، وَإِذَا أَرَدْتَ فِتْنَةَ قَوْمٍ فَتَوَفَّنِي غَيْرَ مَفْتُونٍ", translation: "O Allah, I ask You to help me do good deeds, abandon bad deeds, love the poor, and that You forgive me and have mercy on me. And if You will trial for a people, then take me without being trialed.", reference: "Morning Dua" }
+    ]
+  };
+
+  // Widget state
+  const state = {
+    currentCategory: 'hadith',
+    dailyIndex: null,
+    dailyDate: null,
+    ramadanDay: 1
+  };
+
+  // Initialize the widget
+  function initWidget() {
+    // Check if we already have a daily selection for today
+    const today = new Date().toDateString();
+    const storedData = getStoredData();
+    
+    if (storedData && storedData.date === today) {
+      // Use stored selection for today
+      state.dailyIndex = storedData.dailyIndex;
+      state.dailyDate = storedData.date;
+      state.ramadanDay = storedData.ramadanDay || calculateRamadanDay();
+    } else {
+      // Generate new daily selection
+      generateDailySelection();
+      calculateRamadanDay();
+    }
+    
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Display the initial content
+    updateDisplay();
+    
+    // Show the widget after a short delay
+    setTimeout(() => {
+      document.getElementById('ramadan-widget-container').style.opacity = '1';
+      document.getElementById('ramadan-widget').style.transform = 'translateY(0)';
+    }, 100);
+  }
+
+  // Get stored data from localStorage
+  function getStoredData() {
+    try {
+      const data = localStorage.getItem('ramadanWidgetData');
+      return data ? JSON.parse(data) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Save data to localStorage
+  function saveStoredData() {
+    const data = {
+      dailyIndex: state.dailyIndex,
+      date: state.dailyDate,
+      ramadanDay: state.ramadanDay
+    };
+    
+    try {
+      localStorage.setItem('ramadanWidgetData', JSON.stringify(data));
+    } catch (e) {
+      // Silently fail if localStorage is not available
+    }
+  }
+
+  // Generate a daily random index based on the date
+  function generateDailySelection() {
+    const today = new Date();
+    state.dailyDate = today.toDateString();
+    
+    // Use the day of the year as a seed for consistency
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    
+    // Generate a consistent random index based on the date
+    const seed = dayOfYear * 9301 + 49297; // Simple pseudo-random seed
+    const randomIndex = Math.floor((seed % 899 + 101) % ramadanData.hadith.length);
+    
+    state.dailyIndex = randomIndex;
+    saveStoredData();
+  }
+
+  // Calculate current day of Ramadan with proper year handling
+function calculateRamadanDay() {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  
+  // Ramadan start dates for upcoming years (update annually)
+  const ramadanDates = {
+    2025: new Date(2025, 2, 1),    // March 1, 2025
+    2026: new Date(2026, 1, 18),   // February 18, 2026
+    2027: new Date(2027, 1, 8),    // February 8, 2027
+    2028: new Date(2028, 0, 28),   // January 28, 2028
+    2029: new Date(2029, 0, 16)    // January 16, 2029
+  };
+  
+  // Get start date for current or previous year
+  let ramadanStart = ramadanDates[currentYear] || ramadanDates[currentYear - 1];
+  
+  if (!ramadanStart) {
+    // No date defined - show day 1 as fallback
+    state.ramadanDay = 1;
+    return state.ramadanDay;
+  }
+  
+  // Calculate days difference
+  const diffTime = today - ramadanStart;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays < 0) {
+    // Before Ramadan starts
+    state.ramadanDay = 1;
+  } else if (diffDays >= 0 && diffDays < 30) {
+    // During Ramadan (0-29 days)
+    state.ramadanDay = diffDays + 1; // +1 because Day 1 is actually 0 days difference
+  } else {
+    // After Ramadan (30+ days)
+    state.ramadanDay = 1; // Reset for next year
+  }
+  
+  return state.ramadanDay;
+}
+  // Get a random text that's different from the daily one
+  function getRandomText() {
+    const category = state.currentCategory;
+    const texts = ramadanData[category];
+    let randomIndex;
+    
+    do {
+      randomIndex = Math.floor(Math.random() * texts.length);
+    } while (randomIndex === state.dailyIndex && texts.length > 1);
+    
+    return texts[randomIndex];
+  }
+
+  // Get today's daily text
+  function getDailyText() {
+    const category = state.currentCategory;
+    const texts = ramadanData[category];
+    return texts[state.dailyIndex] || texts[0];
+  }
+
+  // Update the display with current content
+  function updateDisplay() {
+    const textData = getDailyText();
+    const dateElement = document.getElementById('widget-date');
+    const textElement = document.getElementById('daily-text');
+    const referenceElement = document.getElementById('text-reference');
+    const dayCountElement = document.getElementById('day-count');
+    
+    // Format and display date
+    const today = new Date();
+    dateElement.textContent = today.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    // Display the text
+    textElement.innerHTML = `<p>${textData.text}</p>`;
+    
+    if (textData.translation) {
+      textElement.innerHTML += `<p class="translation"><em>${textData.translation}</em></p>`;
+    }
+    
+    // Display reference
+    referenceElement.textContent = `Reference: ${textData.reference}`;
+    
+    // Update day counter with year context
+if (state.ramadanDay === 1) {
+  const today = new Date();
+  const ramadanDates = {
+    2025: new Date(2025, 2, 1),
+    2026: new Date(2026, 1, 18),
+    2027: new Date(2027, 1, 8)
+  };
+  
+  const currentYear = today.getFullYear();
+  const ramadanStart = ramadanDates[currentYear];
+  
+  if (ramadanStart && today < ramadanStart) {
+    // Before Ramadan
+    dayCountElement.textContent = "1 (Ramadan starts soon)";
+  } else {
+    // During or after Ramadan
+    dayCountElement.textContent = state.ramadanDay;
+  }
+} else {
+  dayCountElement.textContent = state.ramadanDay;
+}
+    
+    // Update active category button
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      if (btn.dataset.category === state.currentCategory) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  // Set up event listeners
+  function setupEventListeners() {
+    // Category buttons
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.currentCategory = btn.dataset.category;
+        updateDisplay();
+      });
+    });
+    
+    // Refresh button (shows another random text without changing daily)
+    document.getElementById('refresh-btn').addEventListener('click', () => {
+      const textData = getRandomText();
+      const textElement = document.getElementById('daily-text');
+      const referenceElement = document.getElementById('text-reference');
+      
+      textElement.innerHTML = `<p>${textData.text}</p>`;
+      
+      if (textData.translation) {
+        textElement.innerHTML += `<p class="translation"><em>${textData.translation}</em></p>`;
+      }
+      
+      referenceElement.textContent = `Reference: ${textData.reference}`;
+      
+      // Add a temporary indicator
+      const indicator = document.createElement('div');
+      indicator.className = 'temporary-indicator';
+      indicator.textContent = 'Random selection - daily will return tomorrow';
+      textElement.prepend(indicator);
+      
+      // Remove indicator after 3 seconds
+      setTimeout(() => {
+        if (indicator.parentNode) {
+          indicator.remove();
+        }
+      }, 3000);
+    });
+    
+    // Share button
+    document.getElementById('share-btn').addEventListener('click', () => {
+      const textData = getDailyText();
+      const shareText = `${textData.text}\n\nReference: ${textData.reference}\n\nShared from SYR TV Ramadan Daily`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'Ramadan Daily',
+          text: shareText,
+          url: window.location.href
+        }).catch(console.error);
+      } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(shareText).then(() => {
+          const btn = document.getElementById('share-btn');
+          const originalText = btn.textContent;
+          btn.textContent = '✓ Copied!';
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 2000);
+        });
+      }
+    });
+    
+    // Close widget button
+    document.getElementById('close-widget').addEventListener('click', () => {
+      const container = document.getElementById('ramadan-widget-container');
+      container.style.opacity = '0';
+      setTimeout(() => {
+        container.style.display = 'none';
+      }, 300);
+    });
+  }
+
+  // Wait for DOM to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWidget);
+  } else {
+    initWidget();
+  }
+})();
