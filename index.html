@@ -37,7 +37,7 @@
   <!-- Startup Animation -->
 <div id="startup-screen" style="position:fixed; inset:0; background:black; z-index:9999; display:flex; align-items:center; justify-content:center;">
   <video id="startup-video" autoplay muted playsinline style="max-width:100%; max-height:100%;">
-    <source src="https://sulemanringem.github.io/SYR-TV-Version-2/startup-animation.mp4" type="video/mp4">
+    <source src="https://sulemanringem.github.io/SYR-TV-Version-2/startup-animation1.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
@@ -123,6 +123,41 @@
         <button class="filter-btn">Gaming</button>
         <button class="filter-btn">Live</button>
       </div>
+
+ <!-- Ramadan Hadith Widget Container -->
+<div id="ramadan-widget-container">
+  <div id="ramadan-widget">
+    <div class="widget-header">
+      <h3>📖 Ramadan Daily</h3>
+      <div class="date-display" id="widget-date"></div>
+    </div>
+    <div class="widget-content">
+      <div class="category-selector">
+        <button class="category-btn active" data-category="hadith">Hadith</button>
+        <button class="category-btn" data-category="azkar">Azkar</button>
+      </div>
+      <div class="text-display">
+        <div id="daily-text"></div>
+        <div class="text-reference" id="text-reference"></div>
+      </div>
+      <div class="widget-actions">
+        <button id="refresh-btn" title="Show another (won't change daily selection)">
+          ↻ Another
+        </button>
+        <button id="share-btn" title="Share this text">
+          ↗ Share
+        </button>
+      </div>
+      <div class="widget-footer">
+        <div class="day-counter">
+          Day <span id="day-count">1</span> of Ramadan
+        </div>
+      </div>
+    </div>
+    <button id="close-widget" aria-label="Close widget">×</button>
+  </div>
+</div>
+      
       <div class="video-grid" id="video-grid"></div>
     </main>
   </div>
