@@ -1160,11 +1160,48 @@ function hideLoading() {
     // Display the initial content
     updateDisplay();
     
-    // Show the widget after a short delay
-    setTimeout(() => {
-      document.getElementById('ramadan-widget-container').style.opacity = '1';
-      document.getElementById('ramadan-widget').style.transform = 'translateY(0)';
-    }, 100);
+// Wait for startup video to finish before showing widget
+function showWidget() {
+  const container = document.getElementById('ramadan-widget-container');
+  if (container) {
+    container.style.opacity = '1';
+    container.style.transform = 'translateY(0)';
+  }
+}
+
+// Check if startup video exists
+const startupVideo = document.getElementById('startup-video');
+
+if (startupVideo) {
+  // Video exists - wait for it to end
+  startupVideo.addEventListener('ended', function() {
+    setTimeout(showWidget, 3000); // Show 1 second after video ends
+  });
+  
+  // Fallback: show after 8 seconds max (video duration + buffer)
+  setTimeout(showWidget, 8000);
+} else {
+  // No video - wait for page load or timeout
+  if (document.readyState === 'complete') {
+    setTimeout(showWidget, 3000);
+  } else {
+    let widgetShown = false;
+    
+    window.addEventListener('load', function() {
+      if (!widgetShown) {
+        widgetShown = true;
+        setTimeout(showWidget, 3000);
+      }
+    });
+    
+    setTimeout(function() {
+      if (!widgetShown) {
+        widgetShown = true;
+        showWidget();
+      }
+    }, 3000);
+  }
+  }
   }
 
   // Get stored data from localStorage
