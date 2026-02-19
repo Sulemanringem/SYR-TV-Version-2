@@ -1076,7 +1076,7 @@ function hideLoading() {
   }, 300);
 }
 
-// Ramadan Daily Hadith & Azkar Widget
+// Ramadan Daily Hadith & Azkar Widget - FIXED VERSION
 (function() {
   'use strict';
   
@@ -1134,74 +1134,97 @@ function hideLoading() {
     currentCategory: 'hadith',
     dailyIndex: null,
     dailyDate: null,
-    ramadanDay: 1
+    ramadanDay: 1,
+    isRamadan: false
   };
 
   // Initialize the widget
   function initWidget() {
-    // Check if we already have a daily selection for today
+    // Calculate Ramadan day first
+    calculateRamadanDay();
+    
+    // Check if we're in Ramadan
     const today = new Date().toDateString();
     const storedData = getStoredData();
     
-    if (storedData && storedData.date === today) {
-      // Use stored selection for today
-      state.dailyIndex = storedData.dailyIndex;
-      state.dailyDate = storedData.date;
-      state.ramadanDay = storedData.ramadanDay || calculateRamadanDay();
+    if (state.isRamadan) {
+      // We're in Ramadan - show widget
+      if (storedData && storedData.date === today) {
+        // Use stored selection for today
+        state.dailyIndex = storedData.dailyIndex;
+        state.dailyDate = storedData.date;
+      } else {
+        // Generate new daily selection
+        generateDailySelection();
+      }
+      
+      // Set up event listeners
+      setupEventListeners();
+      
+      // Display the initial content
+      updateDisplay();
+      
+      // Wait for startup video to finish before showing widget
+      showWidgetWithDelay();
     } else {
-      // Generate new daily selection
-      generateDailySelection();
-      calculateRamadanDay();
+      // Not in Ramadan - hide widget completely
+      hideWidgetCompletely();
     }
-    
-    // Set up event listeners
-    setupEventListeners();
-    
-    // Display the initial content
-    updateDisplay();
-    
-// Wait for startup video to finish before showing widget
-function showWidget() {
-  const container = document.getElementById('ramadan-widget-container');
-  if (container) {
-    container.style.opacity = '1';
-    container.style.transform = 'translateY(0)';
   }
-}
 
-// Check if startup video exists
-const startupVideo = document.getElementById('startup-video');
+  // Hide widget when not in Ramadan
+  function hideWidgetCompletely() {
+    const container = document.getElementById('ramadan-widget-container');
+    if (container) {
+      container.style.display = 'none';
+    }
+    console.log('Not in Ramadan - widget hidden');
+  }
 
-if (startupVideo) {
-  // Video exists - wait for it to end
-  startupVideo.addEventListener('ended', function() {
-    setTimeout(showWidget, 3000); // Show 1 second after video ends
-  });
-  
-  // Fallback: show after 8 seconds max (video duration + buffer)
-  setTimeout(showWidget, 8000);
-} else {
-  // No video - wait for page load or timeout
-  if (document.readyState === 'complete') {
-    setTimeout(showWidget, 3000);
-  } else {
-    let widgetShown = false;
-    
-    window.addEventListener('load', function() {
-      if (!widgetShown) {
-        widgetShown = true;
-        setTimeout(showWidget, 3000);
+  // Show widget with delay for startup video
+  function showWidgetWithDelay() {
+    function showWidget() {
+      const container = document.getElementById('ramadan-widget-container');
+      if (container) {
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+        container.style.display = 'block';
       }
-    });
-    
-    setTimeout(function() {
-      if (!widgetShown) {
-        widgetShown = true;
-        showWidget();
+    }
+
+    // Check if startup video exists
+    const startupVideo = document.getElementById('startup-video');
+
+    if (startupVideo) {
+      // Video exists - wait for it to end
+      startupVideo.addEventListener('ended', function() {
+        setTimeout(showWidget, 4000);
+      });
+      
+      // Fallback: show after 8 seconds max
+      setTimeout(showWidget, 8000);
+    } else {
+      // No video - wait for page load or timeout
+      if (document.readyState === 'complete') {
+        setTimeout(showWidget, 4000);
+      } else {
+        let widgetShown = false;
+        
+        window.addEventListener('load', function() {
+          if (!widgetShown) {
+            widgetShown = true;
+            setTimeout(showWidget, 4000);
+          }
+        });
+        
+        setTimeout(function() {
+          if (!widgetShown) {
+            widgetShown = true;
+            showWidget();
+          }
+        }, 3000);
       }
-    }, 3000);
-  }
-  }
+    }
   }
 
   // Get stored data from localStorage
@@ -1234,57 +1257,89 @@ if (startupVideo) {
     const today = new Date();
     state.dailyDate = today.toDateString();
     
-    // Use the day of the year as a seed for consistency
-    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    // Use Ramadan day as seed if in Ramadan
+    if (state.isRamadan && state.ramadanDay > 0 && state.ramadanDay <= 30) {
+      // Use Ramadan day for consistent daily selection
+      state.dailyIndex = (state.ramadanDay * 17) % ramadanData.hadith.length;
+    } else {
+      // Use day of year as fallback
+      const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+      const seed = dayOfYear * 9301 + 49297;
+      state.dailyIndex = Math.floor((seed % 899 + 101) % ramadanData.hadith.length);
+    }
     
-    // Generate a consistent random index based on the date
-    const seed = dayOfYear * 9301 + 49297; // Simple pseudo-random seed
-    const randomIndex = Math.floor((seed % 899 + 101) % ramadanData.hadith.length);
-    
-    state.dailyIndex = randomIndex;
     saveStoredData();
   }
 
   // Calculate current day of Ramadan with proper year handling
-function calculateRamadanDay() {
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  
-  // Ramadan start dates for upcoming years (update annually)
-  const ramadanDates = {
-    2025: new Date(2025, 2, 1),    // March 1, 2025
-    2026: new Date(2026, 1, 18),   // February 18, 2026
-    2027: new Date(2027, 1, 8),    // February 8, 2027
-    2028: new Date(2028, 0, 28),   // January 28, 2028
-    2029: new Date(2029, 0, 16)    // January 16, 2029
-  };
-  
-  // Get start date for current or previous year
-  let ramadanStart = ramadanDates[currentYear] || ramadanDates[currentYear - 1];
-  
-  if (!ramadanStart) {
-    // No date defined - show day 1 as fallback
+  function calculateRamadanDay() {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    
+    // Ramadan start dates for upcoming years (update annually)
+    const ramadanDates = {
+      2025: new Date(2025, 2, 1),    // March 1, 2025
+      2026: new Date(2026, 1, 18),   // February 18, 2026
+      2027: new Date(2027, 1, 8),    // February 8, 2027
+      2028: new Date(2028, 0, 28),   // January 28, 2028
+      2029: new Date(2029, 0, 16)    // January 16, 2029
+    };
+    
+    state.isRamadan = false;
+    
+    // Check current year first
+    let ramadanStart = ramadanDates[currentYear];
+    
+    if (ramadanStart) {
+      const diffTime = today - ramadanStart;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays >= 0 && diffDays < 30) {
+        // During Ramadan
+        state.ramadanDay = diffDays + 1;
+        state.isRamadan = true;
+        console.log(`Ramadan Day ${state.ramadanDay} (${currentYear})`);
+        return state.ramadanDay;
+      } else if (diffDays < 0) {
+        // Before Ramadan - check last year
+        const lastYearStart = ramadanDates[currentYear - 1];
+        if (lastYearStart) {
+          const lastYearDiff = today - lastYearStart;
+          const lastYearDays = Math.floor(lastYearDiff / (1000 * 60 * 60 * 24));
+          
+          if (lastYearDays >= 0 && lastYearDays < 30) {
+            state.ramadanDay = lastYearDays + 1;
+            state.isRamadan = true;
+            console.log(`Ramadan Day ${state.ramadanDay} (${currentYear - 1})`);
+            return state.ramadanDay;
+          }
+        }
+      }
+    }
+    
+    // Check all years as fallback
+    for (let year = currentYear - 1; year <= currentYear + 1; year++) {
+      const start = ramadanDates[year];
+      if (start) {
+        const diffTime = today - start;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays >= 0 && diffDays < 30) {
+          state.ramadanDay = diffDays + 1;
+          state.isRamadan = true;
+          console.log(`Ramadan Day ${state.ramadanDay} (${year})`);
+          return state.ramadanDay;
+        }
+      }
+    }
+    
+    // Not in Ramadan
     state.ramadanDay = 1;
-    return state.ramadanDay;
+    state.isRamadan = false;
+    console.log('Not in Ramadan period');
+    return 1;
   }
-  
-  // Calculate days difference
-  const diffTime = today - ramadanStart;
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  
-  if (diffDays < 0) {
-    // Before Ramadan starts
-    state.ramadanDay = 1;
-  } else if (diffDays >= 0 && diffDays < 30) {
-    // During Ramadan (0-29 days)
-    state.ramadanDay = diffDays + 1; // +1 because Day 1 is actually 0 days difference
-  } else {
-    // After Ramadan (30+ days)
-    state.ramadanDay = 1; // Reset for next year
-  }
-  
-  return state.ramadanDay;
-}
+
   // Get a random text that's different from the daily one
   function getRandomText() {
     const category = state.currentCategory;
@@ -1332,28 +1387,14 @@ function calculateRamadanDay() {
     // Display reference
     referenceElement.textContent = `Reference: ${textData.reference}`;
     
-    // Update day counter with year context
-if (state.ramadanDay === 1) {
-  const today = new Date();
-  const ramadanDates = {
-    2025: new Date(2025, 2, 1),
-    2026: new Date(2026, 1, 18),
-    2027: new Date(2027, 1, 8)
-  };
-  
-  const currentYear = today.getFullYear();
-  const ramadanStart = ramadanDates[currentYear];
-  
-  if (ramadanStart && today < ramadanStart) {
-    // Before Ramadan
-    dayCountElement.textContent = "1 (Ramadan starts soon)";
-  } else {
-    // During or after Ramadan
-    dayCountElement.textContent = state.ramadanDay;
-  }
-} else {
-  dayCountElement.textContent = state.ramadanDay;
-}
+    // Update day counter
+    if (state.isRamadan) {
+      dayCountElement.textContent = state.ramadanDay;
+      dayCountElement.parentElement.innerHTML = `Day <span id="day-count">${state.ramadanDay}</span> of Ramadan`;
+    } else {
+      dayCountElement.textContent = '1';
+      dayCountElement.parentElement.innerHTML = `Ramadan begins soon`;
+    }
     
     // Update active category button
     document.querySelectorAll('.category-btn').forEach(btn => {
@@ -1375,7 +1416,7 @@ if (state.ramadanDay === 1) {
       });
     });
     
-    // Refresh button (shows another random text without changing daily)
+    // Refresh button
     document.getElementById('refresh-btn').addEventListener('click', () => {
       const textData = getRandomText();
       const textElement = document.getElementById('daily-text');
@@ -1395,7 +1436,6 @@ if (state.ramadanDay === 1) {
       indicator.textContent = 'Random selection - daily will return tomorrow';
       textElement.prepend(indicator);
       
-      // Remove indicator after 3 seconds
       setTimeout(() => {
         if (indicator.parentNode) {
           indicator.remove();
@@ -1415,7 +1455,6 @@ if (state.ramadanDay === 1) {
           url: window.location.href
         }).catch(console.error);
       } else {
-        // Fallback: copy to clipboard
         navigator.clipboard.writeText(shareText).then(() => {
           const btn = document.getElementById('share-btn');
           const originalText = btn.textContent;
@@ -1438,7 +1477,7 @@ if (state.ramadanDay === 1) {
   }
 
   // Wait for DOM to be ready
-  if (document.readyState === 'loading') {
+   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initWidget);
   } else {
     initWidget();
